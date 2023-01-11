@@ -11,14 +11,14 @@ class Preprocessing:
         self.data = np.array(self.data, dtype=np.float32)
         self.labels = pd.read_csv(self.label_path).values
 
-    def drawData(self, isShow=False, label=None):
+    def drawData(self, isShow=False, show_label=False):
         plt.title("K-nearest-neighbors")
         plt.xlabel("Heights")
         plt.ylabel("Weights")
-        if label is None:
+        if show_label is None:
             plt.scatter(self.data[:, 0], self.data[:, 1])
         else:
-            plt.scatter(self.data[:, 0], self.data[:, 1], c=label)
+            plt.scatter(self.data[:, 0], self.data[:, 1], c=self.data[:, 2])
         if isShow:
             plt.show()
 
@@ -37,8 +37,9 @@ class Preprocessing:
             self.data[:, i] = scaler[i] * (self.data[:, i] - min_cols) / (max_cols - min_cols)
             scaler_save.append([min_cols, max_cols])
         scaler_save = np.array(scaler_save)
-        np.save('models/scaler_data.npy', scaler_save)
+        np.save('models/scaler_min_max.npy', scaler_save)
         np.save('models/scaler_label.npy', self.labels)
+        np.save('models/scaler_data.npy', self.data)
         print("normalize succeeded")
 
     def get_data_training(self):
@@ -50,4 +51,4 @@ if __name__ == '__main__':
     prep_objc = Preprocessing()
     prep_objc.normalization()
     print(prep_objc.labels)
-    prep_objc.drawData(isShow=True)
+    prep_objc.drawData(isShow=True, show_label=True)
